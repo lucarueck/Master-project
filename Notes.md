@@ -103,11 +103,11 @@ Time Series Benchmarks:
 
 ## Potential Useful Methods, Datasets, Metrics
 Potential Methods:
-- Long-Term Fairness --> Focus on fair decisions over time in sequential decision systems, do not use time series data, designed for classification tasks, contains two other interesting baselines (Fair Model with Demographic Parity/Equal Opportunity)
+- Long-Term Fairness --> Focus on fair decisions over time in sequential decision systems, do not use time series data, designed for classification tasks
 - CA-GAN  --> very complex, no modular implementation, MIMIC dataset is necessary
-- FairST --> very complex, no modular implementation, used dataset is not available
+- FairST --> very complex, no modular implementation, the used dataset is not available
 - FairFor --> designed for MultivariateForecasting and fairness between target variables
-- Fairness in LDS --> is hardly realizable, do not understand concept of LDS, not clear what is predicted and what is used as test data
+- Fairness in LDS --> is hardly realizable, I currently do not understand the concept of LDS and the software MOSEK they use, not clear what is predicted and what is used as test data
 - STEER  --> very complex, no modular implementation, MIMIC dataset is necessary
 
 - currently no answer from authors of FairSTG and SA-Net
@@ -122,10 +122,10 @@ Current Datasets:
 - Favorita_transactions (https://www.kaggle.com/competitions/store-sales-time-series-forecasting/data) 
 - exchange rate dataset of LSTNet work (https://arxiv.org/pdf/1703.07015, https://drive.google.com/drive/folders/1nuMUIADOc1BNN-uDO2N7zohLgpLDgl-Z)
 - Illness (https://arxiv.org/pdf/2106.13008)
+- MIMIC demo dataset (https://physionet.org/content/mimiciii-demo/1.4/)
 
 Potential Datasets:
 - Chicago TNC trip record or any other traffic dataset for demand prediction with fairness between regions (look at BasicTS references)
-- MIMIC or eICU --> I can't access the data, compliance course is necessary (price 129$)
 - Data from Uniklinkum Freiburg?
 - Maybe find data from census https://www.census.gov/econ_datasets/ 
 - Find further datasets from fev-bench (https://huggingface.co/datasets/autogluon/fev_datasets) or other benchmarks
