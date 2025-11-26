@@ -103,12 +103,12 @@ Time Series Benchmarks:
 
 ## Potential Useful Methods, Datasets, Metrics
 Potential Methods:
-- Long-Term Fairness --> Focus on fair decisions over time in sequential decision systems, do not use time series data, designed for classification tasks
-- CA-GAN  --> very complex, no modular implementation, MIMIC dataset is necessary
-- FairST --> very complex, no modular implementation, the used dataset is not available
-- FairFor --> designed for MultivariateForecasting and fairness between target variables
-- Fairness in LDS --> is hardly realizable, I currently do not understand the concept of LDS and the software MOSEK they use, not clear what is predicted and what is used as test data
-- STEER  --> very complex, no modular implementation, MIMIC dataset is necessary
+- Long-Term Fairness --> Focus on fair decisions over time in sequential decision systems, do not specifically focus on time series predictions, designed for classification tasks
+- CA-GAN  --> very complex, no modular implementation, Getting the data is the biggest problem: they use for both datasets many files for preprocessing, it is very hard to reconstruct the data because they use Google Big Tables tables with tables from related works (that are not accessible for me) to preprocess MIMIC, tried executing with own data, took 4 hours, not successful, too many files and no modular implementation, it is not clear where the real CA GAN implementation is, only WP GAN can be found
+- FairST --> very complex, no modular implementation, the used dataset is not available, focus on spatial-temporal data
+- FairFor --> designed for MultivariateForecasting and fairness between target variables, github repo is definetly incomplete, FairFor implementation is missing
+- Fairness in LDS --> is hardly realizable, I currently do not understand the concept of LDS and the software MOSEK they use, not clear what is predicted and what is used as test data, the fairness terms can be extracted, the LDS is applicable to multiple different groups with varying time series lengths
+- STEER  --> very complex, no modular implementation, use mimic-IV and eICU, is not reproducible, multiple files with thousands of lines of code
 
 - currently no answer from authors of FairSTG and SA-Net
 
@@ -122,7 +122,7 @@ Current Datasets:
 - Favorita_transactions (https://www.kaggle.com/competitions/store-sales-time-series-forecasting/data) 
 - exchange rate dataset of LSTNet work (https://arxiv.org/pdf/1703.07015, https://drive.google.com/drive/folders/1nuMUIADOc1BNN-uDO2N7zohLgpLDgl-Z)
 - Illness (https://arxiv.org/pdf/2106.13008)
-- MIMIC demo dataset (https://physionet.org/content/mimiciii-demo/1.4/)
+- MIMIC-III demo dataset (https://physionet.org/content/mimiciii-demo/1.4/)
 
 Potential Datasets:
 - Chicago TNC trip record or any other traffic dataset for demand prediction with fairness between regions (look at BasicTS references)

@@ -1,0 +1,79 @@
+Benchmark:
+- fevbench for dataset loading, window sizing and evaluation, but not usable for data preprocessing and modeling 
+- Fair fairness benchmark: useful for evaluation fairness, metrics of the benchmark can be used
+
+
+Existing works:
+- Achieving Long Term fairness in sequential decision making
+    - Metrics for long- and short-term fairness (see evaluation.py compute statistics)
+    - Parts of baseline models see baseline.py (adjusted to time series modeling)
+    - maybe the sequential decision making framework can be adapted to time series forecasting, but I currently don't understand in depth how it works
+    --> some parts can be useful
+    
+- CA GAN
+    - no model named CA GAN can be found, only baselines smote and WGAN-GP, it is not clear which model is CA GAN
+    - the data named "data_ca_gan" used in the evaluations are not created or provided in any of the files
+    - models and data can currently not be reconstructed from the provided code (if it can, code can be used)
+    --> some parts can be useful
+
+- FairST (EquiTensor)
+    - already outperformed
+    - I can see fairness objective in code but do not understand them fully
+    --> it's unlikely that parts can be used
+
+- FairFor
+    - Github repo seems to be incomplete, can not find FairFor model implementation
+    --> nothing can be used
+
+- Fairness in LDS
+    - Learning objectives can be useful
+    - LDS are applicable to time series of different lengths (not a frequently appearing use case, only model that can to this)
+    --> some parts can be useful
+
+- Steer (Learning Time Series EHR)
+    - very complex code, not reproducible as data is missing
+    --> it's unlikely that parts can be used
+
+
+
+Existing works without an implementation:
+- BAHT
+    - use simple methods for bias mitigation, the approach can be reconstructed
+    
+- FairTP
+    - try to reconstruct targeted sampling, but could be complicated
+
+- SA-Net
+    - fairness objective MAPE can be adopted
+
+- Absolute Correlation regularization
+    - two fairness objective for regularization can be adopted
+
+- FairSTG
+    - too complicated and not suitable as the approach focus on spatial data
+
+- HiMoE
+    - too complicated to reconstruct the model
+
+
+
+
+Benchmark:
+
+Agree one one model (research, currently TFT (Temporal Fusion Transformer or LSTM))
+
+1. Simple TFT/LSTM model
+2. Smote for synthetic data generation for underrepresented groups + TFT/LSTM model     --> CA-GAN
+3. TFT/LSTM model + regularization term (correlation, variance)        --> Absolute Correlation Regularization, FairST, Fairness criteria for LDS, SA-Net
+4. Oversampling/Undersampling strategies + TFT/LSTM model          --> BAHT
+5. Sampling strategy (data from groups that performs worse more often are sampled more frequently) + TFT/LSTM model      --> FairTP
+6. Exclude sensitive information + TFT/LSTM Model               --> STEER
+7. Check if long term fairness work can be adopted         --> Achieving Long Term fairness in sequential decision making
+8. Check if there is sth like information transfer from difficult to easy to learn samples  --> FairSTG
+
+Own approach:
+If underrepresented groups: 
+    Use best representation bias mitigation technique from above (sampling, synthetic data generation) 
++ best regularization technique from above
+
+Not used --> HiMoE (Mixture of Experts), FairFor (currently to complicated, 4 steps, adversarial learning + representation learning)
