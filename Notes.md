@@ -123,6 +123,7 @@ Current Datasets:
 - exchange rate dataset of LSTNet work (https://arxiv.org/pdf/1703.07015, https://drive.google.com/drive/folders/1nuMUIADOc1BNN-uDO2N7zohLgpLDgl-Z)
 - Illness (https://arxiv.org/pdf/2106.13008)
 - MIMIC-III demo dataset (https://physionet.org/content/mimiciii-demo/1.4/)
+- M4 Dataset of autogluon example (Makridakis, Spyros & Spiliotis, Evangelos & Assimakopoulos, Vassilios, 2020. "The M4 Competition: 100,000 time series and 61 forecasting methods," International Journal of Forecasting, Elsevier, vol. 36(1), pages 54-74.)
 
 Potential Datasets:
 - Chicago TNC trip record or any other traffic dataset for demand prediction with fairness between regions (look at BasicTS references)
@@ -132,9 +133,34 @@ Potential Datasets:
 - other potential dataset (traffic and weather, but need further preprocessing https://arxiv.org/pdf/2106.13008)
 
 
+Fairness metrics of the papers:
+- BAHT: bias score, bias amplification — focuses on representations in real and predicted data
+- FairTP: group-wise fairness metrics per sensor and region — computes the prediction difference for all groups and averages it
+- CA-GAN: subgroup accuracy deviation (performance gap as difference between accuracies)
+- STEER: no explicit fairness metric
+- FairFor: variance of MAE per group
+- FairST: comparison of prediction differences within a region (IFG) and between regions (RFG) for different groups; Spearman correlation
+- LDS: not specified
+- SA-Net: MPE gap — difference in average relative prediction error between groups
+- Absolute Correlation Regularization: absolute relative errors between groups; prediction accuracy gap
+- Long-Term Fairness: measures cumulative fairness over time
+- FairSTG: variance of MAE per group
+- HiMoE: mean and standard deviation of prediction errors between groups
 
-Potential Metrics:
-- error Variance between different protected groups or individuals
+https://fairlearn.org/main/user_guide/assessment/common_fairness_metrics.html:
+"In the case of regression, a predictor  satisfies demographic parity under a distribution over if is independent of the sensitive feature Agarwal, Dudík, and Wu[2] show that this is equivalent to. Another way to think of demographic parity in a regression scenario is to compare the average predicted value across groups. Note that in the Fairlearn API, fairlearn.metrics.demographic_parity_difference() is only defined for classification."   --> only thing when regression is measured
+- Other papers that try to adjust ideas of classification fair measures in more complicated metrics, maybe use some of them in evaluation
 
-potential new paper: 
+Potential new paper:
 https://openreview.net/forum?id=D4r8LpZshO
+
+Call chain for TimeSeriesPredictor.fit():
+- autogluon/timeseries/predictor.py → class TimeSeriesPredictor with fit method
+- At the end it calls self._learner.fit — _learner is an instance of TimeSeriesLearner in learner.py (same folder)
+- Then self.trainer.fit(...) is called — trainer is an instance of TimeSeriesTrainer in trainer.py (autogluon/timeseries/trainer). That fit method contains the key calls through the end of training
+- Two other important calls:
+    - When tuning hyperparameters: self.tune_model_hyperparameters is invoked first
+    - Otherwise: self._train_and_save is called (both in the same file); self._fit_ensembles may also be relevant
+        - self._train_and_save calls model.fit, where model is an AbstractTimeSeriesModel
+        - See abstract_timeseries_model.py (autogluon/timeseries/models/abstract) — it defines an abstract _fit method with the training logic
+        - The _fit method is implemented in concrete subclasses (e.g., AbstractGluonTS in autogluon/timeseries/gluonts/abstract.py; AbstractMLForecastModel and PerStepTabularNModel in autogluon/timeseries/autogluon_tabular/abstract.py and per_step.py; and other concrete model implementations)

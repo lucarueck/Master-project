@@ -1,0 +1,113 @@
+plan after meeting:
+- start building a baseline model, try to use autogluon, if its not working use pytorch (research for good models)
+- after that adjust autogluon/pytorch model to include regularization and sampling strategies
+- divide and conquer by starting with one dataset
+- use the system graph to clearly understand whats going on in pytorch
+
+Current Questions:
+
+General Points:
+- Use ideas/parts of existing work (regularization, sampling, synthetic data generation)
+- Define unified Dataset Format and Task Format
+- Decide on Evaluation metrics
+- time series methods should be universal applicable: for every domain, univariate/multivariate forecasting, handling 
+multiple bias generating attributes, processing multiple input features, (best would be if the biased features do not have to be known in advance) 
+- Write Prof. Heckmann for access to Lab
+
+
+long term goal: 
+- Compare around 5 approaches for around 10 datasets
+- develop an own method (maybe not included in project)
+
+
+Other Information:
+- library pygan (CGAN) --> WGAN-GP*
+- MIMIC-IV demo dataset is also available, maybe also look at Freiburg dataset from BA thesis
+- How to standardize multiple time series --> standardize each time series alone and keep mean/var for each to transform it back later
+
+
+
+-------------------------------------------------------------------------------------
+Current Benchmark Plan
+-------------------------------------------------------------------------------------
+
+- Baseline Model: Autogluon TimeSeriesPredictor, Google's Temporal Fusion Transformer, LSTM or something similar 
+                    which can be found in a modular implementation and can be extended easily
+
+Build different time series models based on this baseline:
+1. One simple model without enhancements
+2. One model with prior synthetic data generation for underrepresented groups by using SMOTE (based on CA-GAN work)
+3. Multiple models that enhances the baseline model with regularization terms in the optimization function (based on regularization works of my seminar paper)
+4. Multiple models that use oversampling/undersampling strategies (based on BAHT work)
+5. One model with a sampling strategy that choooses data performing worse more frequently (based on FairTP)
+6. One model that excludes all sensitive information from model training (based on STEER)
+7. Check if long term fairness work can be adopted         --> Achieving Long Term fairness in sequential decision making
+8. Check if there is sth like information transfer from difficult to easy to learn samples  --> FairSTG
+
+
+Our possible own approach:
+1. Check if data contains underrepresented groups, if yes use best representation bias mitigation technique from above (sampling, synthetic data generation) 
+2. Use the best fairness regularization term in the optimization function
+
+
+Works that are not used in my current benchmark plan:
+- HiMoE (Mixture of Experts), too complicated to reconstruct the model 
+- FairFor (currently to complicated, 4 steps, adversarial learning + representation learning)
+
+
+
+---------------------------------------------------------------------------------------
+Usable Parts
+---------------------------------------------------------------------------------------
+Existing works:
+- Achieving Long Term fairness in sequential decision making
+    - Metrics for long- and short-term fairness (see evaluation.py compute statistics)
+        - Short term fairness: Misst, wie stark sich der Modell-Output ändert, wenn man die sensitive Variable künstlich von 0 auf 1 setzt, während alle anderen Features gleich bleiben.
+        - Long-Term fairness: Misst Fairness in einer längeren kausalen Kette, also nach mehreren Zwischenschritten, bei denen vorherige Outputs wieder zu Inputs werden können.
+    - maybe the sequential decision making framework can be adapted to time series forecasting, but I currently don't understand in depth how it works
+    --> some parts can be useful
+    
+- CA GAN
+    - no model named CA GAN can be found, only baselines smote and WGAN-GP, it is not clear which model is CA GAN
+    - the data named "data_ca_gan" used in the evaluations are not created or provided in any of the files
+    - models and data can currently not be reconstructed from the provided code (if it can, code can be used)
+    --> some parts can be useful
+
+- FairST (EquiTensor)
+    - already outperformed
+    - I can see fairness objective in code but do not understand them fully
+    --> it's unlikely that parts can be used
+
+- FairFor
+    - Github repo seems to be incomplete, can not find FairFor model implementation
+    --> nothing can be used
+
+- Fairness in LDS
+    - Learning objectives can be useful
+    - LDS are applicable to time series of different lengths (not a frequently appearing use case, only model that can to this)
+    --> some parts can be useful
+
+- Steer (Learning Time Series EHR)
+    - very complex code, not reproducible as data is missing
+    --> it's unlikely that parts can be used
+
+
+
+Existing works without an implementation:
+- BAHT
+    - use simple methods for bias mitigation, the approach can be reconstructed
+    
+- FairTP
+    - try to reconstruct targeted sampling, but could be complicated
+
+- SA-Net
+    - fairness objective MAPE can be adopted
+
+- Absolute Correlation regularization
+    - two fairness objective for regularization can be adopted
+
+- FairSTG
+    - too complicated and not suitable as the approach focus on spatial data
+
+- HiMoE
+    - too complicated to reconstruct the model

@@ -1,6 +1,8 @@
-todos.txt
 prediction-methods/*
 *.csv
 *.xlsx
 lightning_logs
 optuna_test
+*.parquet
+AutogluonModels
+__pycache__
