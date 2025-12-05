@@ -78,13 +78,13 @@ def evaluate_predictions(test_data, predictor, eval_metrics=["RMSE", "MAE", "MAP
     for c in static_cols:
         per_value = {}
         values = static_df[c].dropna().unique()
-        for val in values:
+        for (
+            val
+        ) in (
+            values
+        ):  # calculate the performance measure for each subgroup of the column
             item_ids = static_df.loc[static_df[c] == val, "item_id"].unique()
-            if len(item_ids) == 0:
-                continue
             subset = merged[merged["item_id"].isin(item_ids)].copy()
-            if subset.empty:
-                continue
             static_subset = static_df[
                 static_df["item_id"].isin(item_ids)
             ].drop_duplicates()
@@ -98,25 +98,7 @@ def evaluate_predictions(test_data, predictor, eval_metrics=["RMSE", "MAE", "MAP
 
             eval_res = predictor.evaluate(ts_subset, metrics=eval_metrics)
 
-            # Normalize evaluator output into a pandas Series:
-            if isinstance(eval_res, dict):
-                per_value[val] = pd.Series(eval_res)
-            elif isinstance(eval_res, pd.Series):
-                per_value[val] = eval_res
-            elif isinstance(eval_res, pd.DataFrame):
-                # Try to squeeze common shapes into a Series
-                try:
-                    per_value[val] = eval_res.squeeze()
-                except Exception:
-                    # fallback: take the first column as representative
-                    per_value[val] = eval_res.iloc[:, 0]
-            else:
-                # best-effort: try to coerce to Series
-                per_value[val] = pd.Series(eval_res)
-
-        if not per_value:
-            results[c] = pd.DataFrame()  # no groups found for this column
-            continue
+            per_value[val] = pd.Series(eval_res)
 
         all_metrics_vals = pd.DataFrame(per_value)
         # ensure numeric where possible
@@ -133,9 +115,7 @@ def evaluate_predictions(test_data, predictor, eval_metrics=["RMSE", "MAE", "MAP
             s = all_metrics_vals.loc[metric, group_cols].dropna().astype(float)
             if s.empty:
                 continue
-            std = s.std(
-                ddof=0
-            )  # population std (match original behaviour if desired change ddof)
+            std = s.std()
             mean = s.mean()
             max_diff = s.max() - s.min()
             pairwise = [abs(a - b) for a, b in itertools.combinations(s, 2)]
