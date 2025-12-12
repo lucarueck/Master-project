@@ -1,10 +1,45 @@
-plan after meeting:
-- start building a baseline model, try to use autogluon, if its not working use pytorch (research for good models)
-- after that adjust autogluon/pytorch model to include regularization and sampling strategies
-- divide and conquer by starting with one dataset
-- use the system graph to clearly understand whats going on in pytorch
+meeting notes:
+- check impact of prediction length (on fairness), check suggested prediction lengths in literature
+- check impact of alpha in my metric (experiments)
+
+1. rechecking/adjusting/fixing
+2. use new datasets
+3. execute experiments (effects, hyperparameters)
+
+
+
+Answers to last meeting questions:
+Information from tutorial (https://auto.gluon.ai/stable/tutorials/timeseries/forecasting-indepth.html): 
+
+- There are known and past covariates: known covariates are known for the entire forecasting horizon, past covariates only up to the start of the forecast horizon
+specified columns in TimeSeriesPredctor are known covariates, the remaining columns will automatically be interpreted as past covariates
+
+- weekend dtype: the original dtype is bool, the looking into the code once can see that int, bool and float are interpreted as continuous variabales, while object, string and
+category are interpreted as categorical variables --> couldn't find out why bool is interpreted as continous (maybe due to programming efficency reasons, as it can be converted to 0/1),
+    I suggest to convert it to a categorical variable manually for the experiments, as for me its more categorical
+
+- note on metric results of autogluon in evaluate function:
+        .. note::
+            Metrics are always reported in 'higher is better' format.
+            This means that metrics such as MASE or MAPE will be multiplied by -1, so their values will be negative.
+            This is necessary to avoid the user needing to know the metric to understand if higher is better when
+            looking at the evaluation results.
+    --> my suggestion multiply results with -1 again, I compared the results with MAE of sklearn and they return the same values
+    --> in their implementation their is a class parameter which defaults multiplys the results with -1, my implementation is correct and is multiplied by -1 internally
+
+- Four different training presets: fast_training, medium_quality, high_quality, best_quality (differences in amout of models trained and training time)
+
+- Own models can be added to autogluon Time Series Predictor in the 'hyperparameters' parameter, implementation of a custom model is 
+complex and will take some time (minimum 2-4 hours), source: https://auto.gluon.ai/dev/tutorials/timeseries/advanced/forecasting-custom-model.html
+
+- Model zoo (list of 25 models): https://auto.gluon.ai/stable/tutorials/timeseries/forecasting-model-zoo.html
+    --> According to ChatGPT there are only two methods using bootstraping (NPTSModel, ZeroModel)
+
 
 Current Questions:
+- What did you meant with bootstraping?
+
+
 
 General Points:
 - Use ideas/parts of existing work (regularization, sampling, synthetic data generation)

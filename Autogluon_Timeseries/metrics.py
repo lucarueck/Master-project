@@ -58,7 +58,9 @@ class MAPE_GroupFairnessScorer(TimeSeriesScorer):
         )
 
 
-def evaluate_predictions(test_data, predictor, eval_metrics=["RMSE", "MAE", "MAPE"]):
+def evaluate_predictions(
+    test_data, train_data, predictor, predictions, eval_metrics=["RMSE", "MAE", "MAPE"]
+):
     """
     For every column in test_data.static_features, compute the requested metrics for each distinct
     value of that column and return a dict mapping column -> DataFrame with per-value metric
@@ -128,4 +130,13 @@ def evaluate_predictions(test_data, predictor, eval_metrics=["RMSE", "MAE", "MAP
 
         results[c] = all_metrics_vals
 
+        data_future = test_data.loc[~test_data.index.isin(train_data.index)]
+        fair_metric = MAPE_GroupFairnessScorer(alpha=1)
+        print(
+            "Own metric: ",
+            fair_metric.compute_metric(
+                data_future=data_future,
+                predictions=predictions,
+            ),
+        )
     return results
